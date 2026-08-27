@@ -1,0 +1,1178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>YOOBELONG - Clickable Senior Living Portal Prototype</title>
+<style>
+:root{
+ --petrol:#08343A; --teal:#157C82; --mint:#DCEDEB; --gold:#E9A21B;
+ --paper:#FBFAF6; --white:#fff; --ink:#14201E; --muted:#5C6A66; --rule:#DEDCD3; --soft:#F2F0E9;
+}
+*{box-sizing:border-box}
+body{margin:0;font:18px/1.55 Georgia,serif;color:var(--ink);background:var(--paper)}
+h1,h2,h3,h4,.brand,.btn,.nav,.eyebrow,.chip,.status,.price{font-family:Arial,sans-serif}
+a{color:var(--teal)}
+header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);border-bottom:1px solid var(--rule);backdrop-filter:blur(10px)}
+.navbar{max-width:1200px;margin:auto;min-height:72px;display:flex;align-items:center;gap:26px;padding:10px 20px}
+.brand{font-weight:800;letter-spacing:.14em;color:var(--petrol);cursor:pointer}.brand b{color:var(--gold)}
+.nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px}.nav a{text-decoration:none;color:#33403D;cursor:pointer}.nav a:hover{color:var(--teal)}
+.actions{margin-left:auto;display:flex;gap:8px}
+.btn{border:0;border-radius:999px;padding:12px 18px;background:var(--gold);color:var(--petrol);font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.alt{background:transparent;border:1px solid var(--teal);color:var(--teal)}
+.btn.dark{background:var(--petrol);color:white}
+main{max-width:1200px;margin:auto;padding:0 20px 70px}
+.page{display:none}.page.active{display:block}
+.hero{margin:34px 0 24px;border-radius:24px;background:linear-gradient(135deg,var(--petrol),#0E5158);color:white;padding:54px;display:grid;grid-template-columns:1.25fr .75fr;gap:35px}
+.hero h1{font-size:52px;line-height:1.02;margin:8px 0 18px}.hero p{color:#e6f1ef;max-width:680px}
+.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:#9fd0ce}
+.hero-card{background:#ffffff12;border:1px solid #ffffff2b;border-radius:18px;padding:24px}.hero-card h3{margin-top:0}
+section{margin:52px 0}.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px}.section-head h2{font-size:34px;margin:0 0 8px}.section-head p{color:var(--muted);max-width:760px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.card{background:white;border:1px solid var(--rule);border-radius:16px;padding:22px}.card.click{cursor:pointer}.card.click:hover{border-color:var(--teal);transform:translateY(-2px)}
+.chip{font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:var(--mint);color:var(--petrol);border-radius:999px;padding:5px 9px;display:inline-block}
+.status{font-size:12px;font-weight:700;border-radius:999px;padding:6px 10px;display:inline-block}.available{background:#DDF3E3;color:#276A3C}.wait{background:#FFF0C9;color:#7D5900}.planned{background:#E8E5FF;color:#5147A4}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.fact{background:var(--soft);border-radius:12px;padding:16px}.fact b{font:700 24px Arial}.fact span{display:block;color:var(--muted);font-size:14px}
+.searchbox{display:flex;gap:10px;background:white;border:1px solid var(--rule);padding:14px;border-radius:16px;flex-wrap:wrap}
+.searchbox input,.searchbox select{padding:13px;border:1px solid var(--rule);border-radius:10px;font:16px Arial;flex:1;min-width:150px}
+.res-card{background:#fff;border:1px solid var(--rule);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+.res-card img{width:100%;height:220px;object-fit:cover;background:#ddd}.res-body{padding:20px;display:flex;flex-direction:column;gap:10px;height:100%}
+.res-body h3{margin:0}.res-body p{margin:0;color:var(--muted)}.res-meta{font:14px Arial;color:#40504c}
+.price{font-weight:800;color:var(--petrol);margin-top:auto}
+.gallery{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px}.gallery img{width:100%;height:360px;object-fit:cover;border-radius:15px}.gallery img:not(:first-child){height:176px}
+.detail-grid{display:grid;grid-template-columns:1.3fr .7fr;gap:28px}.sticky{position:sticky;top:100px}
+.table{width:100%;border-collapse:collapse;background:white;border-radius:14px;overflow:hidden}.table td,.table th{padding:14px;border-bottom:1px solid var(--rule);text-align:left}.table th{font:12px Arial;text-transform:uppercase;letter-spacing:.08em;background:var(--soft)}
+.notice{padding:18px 22px;border-left:4px solid var(--gold);background:#fff6df;border-radius:0 12px 12px 0}
+.footer{background:var(--petrol);color:#d9e5e3;padding:35px;border-radius:22px;margin-top:60px}.footer a{color:#d9e5e3}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:40;padding:5vh 20px}.modal.open{display:block}.modalbox{max-width:720px;margin:auto;background:white;border-radius:20px;padding:30px;max-height:90vh;overflow:auto}.close{float:right;border:0;background:none;font-size:25px;cursor:pointer}
+@media(max-width:850px){
+ .hero,.detail-grid,.grid,.grid2,.facts{grid-template-columns:1fr}.hero{padding:30px}.hero h1{font-size:38px}.nav{display:none}.actions .alt{display:none}
+ .gallery{grid-template-columns:1fr}.gallery img,.gallery img:not(:first-child){height:240px}.sticky{position:static}
+}
+
+.city-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.city-card{overflow:hidden;border:1px solid #e8e4df;border-radius:22px;background:#fff}
+.city-card img{width:100%;height:230px;object-fit:cover;display:block}
+.city-body{padding:20px}
+.city-meta{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.city-meta span{background:#f5f3ef;border-radius:999px;padding:7px 10px;font-size:13px}
+.city-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+@media(max-width:760px){.city-grid{grid-template-columns:1fr}.city-card img{height:200px}}
+
+.services-hero{margin:34px 0 18px;padding:20px 0 8px}
+.services-hero h1{font-size:44px;margin:0 0 8px}
+.services-hero p{color:var(--muted);margin:0}
+.services-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:26px 0 18px;flex-wrap:wrap}
+.services-search{display:flex;gap:10px;flex:1;min-width:320px}
+.services-search input{flex:1;padding:14px 16px;border:1px solid var(--rule);border-radius:12px;font:16px Arial;background:#fff}
+.category-row{display:flex;gap:9px;flex-wrap:wrap;margin:8px 0 26px}
+.category-pill{font:14px Arial;border:1px solid #d5dbe6;background:#fff;color:#415067;padding:9px 13px;border-radius:9px;cursor:pointer}
+.category-pill.active{background:#1d55e7;color:#fff;border-color:#1d55e7}
+.services-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.service-card{background:#fff;border:1px solid #dfe3ea;border-radius:20px;overflow:hidden;box-shadow:0 1px 0 rgba(16,24,40,.03);display:flex;flex-direction:column}
+.service-card-image{position:relative;height:210px;overflow:hidden;background:#edf0f4}
+.service-card-image img{width:100%;height:100%;object-fit:cover;display:block}
+.favorite{position:absolute;right:14px;top:14px;width:44px;height:44px;border-radius:12px;border:1px solid #dfe3ea;background:rgba(255,255,255,.93);font:24px Arial;display:grid;place-items:center;cursor:pointer}
+.service-card-body{padding:18px 20px 16px;display:flex;flex-direction:column;gap:10px;height:100%}
+.service-card-body h3{font-size:21px;line-height:1.15;margin:0}
+.service-card-body p{margin:0;color:#4f5d73;font-size:15px}
+.service-tags{display:flex;gap:6px;flex-wrap:wrap}
+.service-tag{font:13px Arial;color:#5b73a8;border:1px solid #cfd9eb;border-radius:5px;padding:3px 6px;background:#fff}
+.service-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:6px}
+.service-price{font:14px Arial;color:#334155;font-weight:700}
+.service-link{font:14px Arial;color:#1d55e7;font-weight:700;cursor:pointer}
+.service-info-bar{margin-top:18px;display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+.info-note{padding:14px 16px;border:1px solid #d6dfef;background:#eef4ff;border-radius:12px;font:14px Arial;color:#4b5e7a}
+@media(max-width:1050px){.services-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.services-grid{grid-template-columns:1fr}.services-search{min-width:100%}.service-info-bar{grid-template-columns:1fr}}
+
+
+.location-intro{display:grid;grid-template-columns:1.2fr .8fr;gap:26px;align-items:stretch}
+.location-callout{background:#fff;border:1px solid var(--rule);border-radius:18px;padding:22px}
+.location-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.location-card{background:#fff;border:1px solid var(--rule);border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
+.location-visual{height:190px;background:#e9efef;position:relative;overflow:hidden}
+.location-visual svg{width:100%;height:100%;display:block}
+.location-body{padding:20px;display:flex;flex-direction:column;gap:10px;height:100%}
+.location-body h3{margin:0;font-size:24px}
+.location-body p{margin:0;color:var(--muted);font-size:15px}
+.location-tags{display:flex;gap:6px;flex-wrap:wrap}
+.location-tag{font:12px Arial;border:1px solid #d7dedb;border-radius:999px;padding:5px 8px;color:#4f625d;background:#fafcfb}
+.location-cta{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto;padding-top:8px}
+.location-arrow{font:700 14px Arial;color:var(--teal);cursor:pointer}
+@media(max-width:1000px){.location-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.location-grid,.location-intro{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<header>
+<div class="navbar">
+<div class="brand" onclick="go('home')">YOO<b>BELONG</b></div>
+<nav class="nav">
+<a onclick="go('living')">Living</a>
+<a onclick="go('catalog')">Residences</a>
+<a onclick="go('cities')">Locations</a>
+<a onclick="go('cities')">Cities</a>
+<a onclick="go('community')">Community</a>
+<a onclick="go('services')">Services</a>
+<a onclick="go('guide')">Guide</a>
+<a onclick="go('partners')">For Partners</a>
+</nav>
+<div class="actions">
+<button class="btn alt" onclick="openModal('login')">Sign in</button>
+<button class="btn" onclick="openModal('wait')">Register interest</button>
+</div>
+</div>
+</header>
+
+<div id="locationBanner" style="display:none;background:#FFF7E1;border-bottom:1px solid #E8D59F;">
+  <div style="max-width:1200px;margin:auto;padding:12px 20px;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap">
+    <div style="font-family:Arial,sans-serif;color:#27322f">
+      <b>We think you're in <span id="detectedCity">Berlin</span>.</b>
+      Is this the right city for local services and activities?
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="confirmCity(true)">Yes, use this city</button>
+      <button class="btn alt" onclick="confirmCity(false)">Change city</button>
+    </div>
+  </div>
+</div>
+
+<main>
+<div id="home" class="page active">
+<div class="hero">
+<div>
+<div class="eyebrow">Independent living. Real community.</div>
+<h1>A home for the life that is still ahead.</h1>
+<p>YOOBELONG combines age-friendly housing, local services and active communities. Live independently in your own apartment, with as much or as little support as you choose.</p>
+<p><button class="btn" onclick="go('catalog')">Explore residences</button> <button class="btn alt" style="color:white;border-color:white" onclick="go('living')">How it works</button></p>
+</div>
+<div class="hero-card">
+<h3>What are you looking for?</h3>
+<p>A home for myself or a family member</p>
+<button class="btn" onclick="go('catalog')">View residences</button>
+<hr style="border-color:#ffffff2b">
+<p>I develop, own or operate real estate</p>
+<button class="btn alt" style="color:white;border-color:white" onclick="go('partners')">Partner with us</button>
+</div>
+</div>
+
+<section>
+<div class="facts">
+<div class="fact"><b>Your own home</b><span>Privacy and independence</span></div>
+<div class="fact"><b>Age-friendly</b><span>Designed for today and tomorrow</span></div>
+<div class="fact"><b>Community</b><span>People, activities and belonging</span></div>
+<div class="fact"><b>Flexible services</b><span>Book support only when you need it</span></div>
+</div>
+</section>
+
+<section>
+<div class="section-head"><div><h2>Featured residences</h2><p>Browse real market references and illustrative YOOBELONG residence concepts. The prototype separates residences with current availability from waiting-list and pre-launch opportunities.</p></div><button class="btn" onclick="go('catalog')">View full catalog</button></div>
+<div class="grid">
+<div class="res-card click" onclick="go('detail-berlin')"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"><div class="res-body"><span class="status available">Apartments available</span><h3>YOOBELONG Berlin West</h3><p>Illustrative residence concept with private apartments, community lounge, garden and local services.</p><div class="price">From EUR 1,490 / month*</div></div></div>
+<div class="res-card click" onclick="go('detail-hamburg')"><img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=80"><div class="res-body"><span class="status wait">Join waiting list</span><h3>YOOBELONG Hamburg Alster</h3><p>Illustrative waterfront-inspired urban residence with 1-3 room apartments and shared spaces.</p><div class="price">Register for future availability</div></div></div>
+<div class="res-card"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80"><div class="res-body"><span class="status available">Real-world reference</span><h3>THE FLAG Senior Living</h3><p>German service-living operator used here as a market reference for modern apartment-based senior living.</p><div class="price">Reference example</div></div></div>
+</div>
+</section>
+
+
+<section>
+<div class="section-head">
+  <div><h2>Activities near you</h2><p>Discover small, local experiences that make it easier to stay active, meet people and try something new.</p></div>
+  <button class="btn alt" onclick="go('booking')">Show all activities</button>
+</div>
+<div class="grid">
+  <div class="card">
+    <span class="chip">Sport & Wellness</span>
+    <h3>Morning mobility & stretch</h3>
+    <p>Berlin Westend · Small group · 60 min</p>
+    <p>A gentle guided session focused on mobility, balance and everyday movement.</p>
+    <button class="btn" onclick="openModal('bookact')">Book activity</button>
+  </div>
+  <div class="card">
+    <span class="chip">Culture & Music</span>
+    <h3>Chamber music evening</h3>
+    <p>Berlin Charlottenburg · 90 min</p>
+    <p>Local classical music evening followed by coffee and informal conversation.</p>
+    <button class="btn" onclick="openModal('bookact')">Book activity</button>
+  </div>
+  <div class="card">
+    <span class="chip">Community</span>
+    <h3>Neighborhood coffee meetup</h3>
+    <p>Berlin Westend · Free</p>
+    <p>An easy way to meet people from the area without committing to a formal club.</p>
+    <button class="btn" onclick="openModal('bookact')">Join activity</button>
+  </div>
+</div>
+</section>
+
+<section>
+<div class="section-head">
+  <div><h2>Local services for everyday life</h2><p>Trusted local partners can support residents with practical, wellbeing and lifestyle services.</p></div>
+  <button class="btn alt" onclick="go('booking')">Show all services</button>
+</div>
+<div class="grid">
+  <div class="card">
+    <span class="chip">Wellbeing</span>
+    <h3>At-home physiotherapy</h3>
+    <p>Berlin Westend · Partner service</p>
+    <p>Book an introductory physiotherapy session at home or in a nearby practice.</p>
+    <button class="btn" onclick="openModal('bookservice')">Request service</button>
+  </div>
+  <div class="card">
+    <span class="chip">Household</span>
+    <h3>Home cleaning support</h3>
+    <p>Berlin Westend · Flexible frequency</p>
+    <p>Regular or one-time cleaning support from a local partner.</p>
+    <button class="btn" onclick="openModal('bookservice')">Request service</button>
+  </div>
+  <div class="card">
+    <span class="chip">Technical help</span>
+    <h3>Digital help at home</h3>
+    <p>Berlin Westend · 60 min</p>
+    <p>Help with smartphones, tablets, video calls, online services and everyday digital questions.</p>
+    <button class="btn" onclick="openModal('bookservice')">Request service</button>
+  </div>
+</div>
+</section>
+<div class="notice"><b>Prototype disclaimer:</b> YOOBELONG residence names, prices, availability and apartment details are illustrative unless explicitly marked as real-world references. Photos are visual examples, not representations of actual YOOBELONG properties.</div>
+</div>
+
+<div id="living" class="page">
+<div class="hero"><div><div class="eyebrow">Living</div><h1>Senior residence, senior apartment or assisted living?</h1><p>The labels can be confusing. YOOBELONG starts with how you want to live: independently, socially connected and with optional support when needed.</p></div><div class="hero-card"><h3>The YOOBELONG model</h3><p>Private apartment + age-friendly environment + community + optional local services. Care is not a mandatory part of the rental model.</p></div></div>
+<section><table class="table"><tr><th>Living model</th><th>Private apartment</th><th>Community</th><th>Care included</th></tr><tr><td>YOOBELONG / service living</td><td>Yes</td><td>Actively supported</td><td>No, optional externally</td></tr><tr><td>Assisted living</td><td>Usually</td><td>Depends on operator</td><td>Basic support, care optional</td></tr><tr><td>Nursing home</td><td>Room / apartment</td><td>Facility-based</td><td>Yes</td></tr></table></section>
+<section><button class="btn" onclick="go('catalog')">Browse residences</button></section>
+</div>
+
+<div id="catalog" class="page">
+<div class="hero">
+<div><div class="eyebrow">Residence catalog</div><h1>Find a residence and see the apartments.</h1><p>The catalog is designed around the patterns used by senior-living competitors: current availability is shown first; when no suitable apartment is available, users can save their housing preferences or join a residence waiting list.</p></div>
+<div class="hero-card"><h3>Three clear statuses</h3><p><b>Available now</b> - view apartments and enquire.<br><b>Waiting list</b> - save your preferred apartment profile.<br><b>Coming soon</b> - register early interest before launch.</p></div>
+</div>
+
+<section>
+<div class="searchbox">
+<select><option>All cities</option><option>Berlin</option><option>Hamburg</option><option>Munich</option><option>Cologne</option><option>Duisburg</option></select>
+<select><option>All availability</option><option>Available now</option><option>Waiting list</option><option>Coming soon</option></select>
+<select><option>Any size</option><option>1 room</option><option>2 rooms</option><option>3 rooms</option></select>
+<select><option>Any monthly budget</option><option>Up to EUR 1,500</option><option>EUR 1,500-2,500</option><option>EUR 2,500+</option></select>
+<button class="btn" onclick="openModal('search')">Show residences</button>
+</div>
+</section>
+
+<section>
+<div class="grid">
+<div class="res-card click" onclick="go('detail-berlin')">
+<img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80">
+<div class="res-body"><span class="status available">Apartments available</span><h3>YOOBELONG Berlin West</h3><div class="res-meta">Berlin · Charlottenburg-Westend</div><p>Modern urban living with community lounge, landscaped courtyard, wellness room and partner services.</p><div class="price">From EUR 1,490 / month*</div><button class="btn">View apartments</button></div></div>
+
+<div class="res-card click" onclick="go('detail-hamburg')">
+<img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=80">
+<div class="res-body"><span class="status wait">Waiting list</span><h3>YOOBELONG Hamburg Alster</h3><div class="res-meta">Hamburg · Alster area</div><p>Illustrative residence with light-filled apartments, garden terraces, shared dining and community events.</p><div class="price">Future availability</div><button class="btn">Join waiting list</button></div></div>
+
+<div class="res-card click" onclick="go('detail-munich')">
+<img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80">
+<div class="res-body"><span class="status planned">Coming soon</span><h3>YOOBELONG Munich South</h3><div class="res-meta">Munich metropolitan area</div><p>Illustrative pre-launch project combining independent apartments, shared amenities and neighborhood services.</p><div class="price">Early interest registration</div><button class="btn">Register interest</button></div></div>
+
+<div class="res-card">
+<img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80">
+<div class="res-body"><span class="status available">Real-world reference</span><h3>THE FLAG Senior Living</h3><div class="res-meta">Germany · multiple service-living references</div><p>Market reference for contemporary senior apartments with private balconies and service-oriented living.</p><div class="price">Competitor reference</div></div></div>
+
+<div class="res-card">
+<img src="https://images.unsplash.com/photo-1600585152915-d208bec867a1?auto=format&fit=crop&w=1200&q=80">
+<div class="res-body"><span class="status available">Real-world reference</span><h3>olivyo / NIDO Duisburg</h3><div class="res-meta">Duisburg</div><p>Senior-friendly, barrier-free apartment concepts with community spaces. Public project information describes 100+ residential units at individual sites.</p><div class="price">Competitor reference</div></div></div>
+
+<div class="res-card">
+<img src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=1200&q=80">
+<div class="res-body"><span class="status available">Real-world reference</span><h3>Augustinum Residence</h3><div class="res-meta">Germany · multiple locations</div><p>Competitor reference for the "housing exchange" pattern: selected apartments can be presented as immediately available while other users enquire for future options.</p><div class="price">Competitor reference</div></div></div>
+</div>
+</section>
+</div>
+
+<div id="detail-berlin" class="page">
+<div class="hero"><div><div class="eyebrow">YOOBELONG residence · illustrative</div><h1>YOOBELONG Berlin West</h1><p>Independent apartments in an urban community setting, designed around privacy, social connection and optional everyday services.</p><p><button class="btn" onclick="openModal('rental')">Enquire about an apartment</button> <button class="btn alt" style="color:white;border-color:white" onclick="openModal('viewing')">Book a viewing</button></p></div><div class="hero-card"><h3>At a glance</h3><p>Berlin Westend<br>1-3 room apartments<br>Lift & step-free access<br>Community lounge & garden<br>Optional local services</p></div></div>
+
+<section>
+<div class="gallery">
+<img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80">
+<div><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=900&q=80"><img src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=900&q=80"></div>
+<div><img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=900&q=80"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80"></div>
+</div>
+</section>
+
+<section class="detail-grid">
+<div>
+<h2>Available apartments</h2>
+<table class="table">
+<tr><th>Apartment</th><th>Size</th><th>Monthly rent*</th><th>Status</th></tr>
+<tr><td>1-bedroom · 2 rooms</td><td>52 m²</td><td>EUR 1,490</td><td><span class="status available">Available</span></td></tr>
+<tr><td>1-bedroom · 2 rooms</td><td>61 m²</td><td>EUR 1,690</td><td><span class="status available">Available</span></td></tr>
+<tr><td>2-bedroom · 3 rooms</td><td>78 m²</td><td>EUR 2,090</td><td><span class="status wait">Waitlist</span></td></tr>
+</table>
+
+<h2>Apartment features</h2>
+<div class="grid2">
+<div class="card"><h3>Age-friendly design</h3><p>Step-free access, lift, generous door widths and bathrooms planned for long-term usability.</p></div>
+<div class="card"><h3>Your own furniture</h3><p>Neutral, flexible layouts that still feel like a private home rather than an institution.</p></div>
+<div class="card"><h3>Balcony or terrace</h3><p>Private outdoor space wherever the apartment configuration allows it.</p></div>
+<div class="card"><h3>Optional services</h3><p>Cleaning, mobility, wellbeing and other local services can be booked separately.</p></div>
+</div>
+</div>
+
+<div>
+<div class="card sticky">
+<span class="status available">Now accepting enquiries</span>
+<h3>Interested in Berlin West?</h3>
+<p>Choose a specific available apartment or create a housing profile if your preferred size is not currently available.</p>
+<button class="btn" style="width:100%;margin-bottom:10px" onclick="openModal('rental')">Enquire now</button>
+<button class="btn alt" style="width:100%" onclick="openModal('waitapt')">Save housing preferences</button>
+<p style="font-size:13px;color:var(--muted)">*Illustrative prototype pricing, not a real YOOBELONG offer.</p>
+</div>
+</div>
+</section>
+</div>
+
+<div id="detail-hamburg" class="page">
+<div class="hero"><div><div class="eyebrow">YOOBELONG residence · illustrative</div><h1>YOOBELONG Hamburg Alster</h1><p>No suitable apartment available yet? The residence page should still convert interest. Users can join the waiting list and specify exactly what they are looking for.</p><p><button class="btn" onclick="openModal('waitapt')">Join the waiting list</button></p></div><div class="hero-card"><h3>Your housing profile</h3><p>1 or 2 residents<br>Preferred number of rooms<br>Desired living area<br>Maximum monthly budget<br>Preferred move-in date<br>Balcony / lift / accessibility needs</p></div></div>
+<section><div class="gallery"><img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1400&q=80"><div><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=900&q=80"><img src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=900&q=80"></div><div><img src="https://images.unsplash.com/photo-1600585152915-d208bec867a1?auto=format&fit=crop&w=900&q=80"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80"></div></div></section>
+<section><div class="facts"><div class="fact"><b>1</b><span>Select residence</span></div><div class="fact"><b>2</b><span>Describe your apartment needs</span></div><div class="fact"><b>3</b><span>Confirm contact details</span></div><div class="fact"><b>4</b><span>Get notified when there is a match</span></div></div></section>
+</div>
+
+<div id="detail-munich" class="page">
+<div class="hero"><div><div class="eyebrow">Pre-launch residence · illustrative</div><h1>YOOBELONG Munich South</h1><p>Future residence pages can start building demand before opening. Visitors see the concept, expected apartment types, amenities and target launch window, then register early interest.</p><p><button class="btn" onclick="openModal('wait')">Register early interest</button></p></div><div class="hero-card"><h3>Planned concept</h3><p>1-3 room apartments<br>Shared garden and lounge<br>Wellbeing & fitness spaces<br>Local service partners<br>Digital community access</p></div></div>
+<section><div class="grid"><div class="card"><h3>Before launch</h3><p>Collect location demand and apartment preferences before final availability is published.</p></div><div class="card"><h3>After lease signing</h3><p>Future tenants can enter the digital building community before moving in and receive project updates.</p></div><div class="card"><h3>After move-in</h3><p>Building activities, services, local offers and community communication become available in one environment.</p></div></div></section>
+</div>
+
+
+<div id="cities" class="page">
+<div class="hero">
+  <div>
+    <div class="eyebrow">Locations across Germany</div>
+    <h1>Explore where YOOBELONG can grow.</h1>
+    <p>Each city page can combine senior-living residences, neighborhood information, local services, activities and demand-generation tools. The city layer becomes both a user discovery experience and a scalable SEO structure.</p>
+  </div>
+  <div class="hero-card">
+    <h3>How location works</h3>
+    <p>YOOBELONG can suggest a city from the user's approximate IP location, ask for confirmation, and then prioritize residences, services and activities nearby.</p>
+  </div>
+</div>
+
+<section>
+<div class="location-intro">
+  <div>
+    <div class="section-head"><div><h2>German cities</h2><p>Representative city pages for the national portal. Each can later expand into districts, residence listings and local booking content.</p></div></div>
+  </div>
+  <div class="location-callout">
+    <span class="chip">Prototype logic</span>
+    <h3>City -> district -> residence</h3>
+    <p>Users can enter through Google, a campaign or the main site, then progressively narrow the journey from city to neighborhood to a specific residence or local offer.</p>
+  </div>
+</div>
+</section>
+
+<section>
+<div class="location-grid">
+
+<article class="location-card">
+  <div class="location-visual">
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Berlin illustration">
+  <defs>
+    <linearGradient id="g15603217" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfeeed"/>
+      <stop offset="1" stop-color="#f5e8c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="260" fill="url(#g15603217)"/>
+  <circle cx="485" cy="62" r="34" fill="#E9A21B" opacity=".75"/>
+  <path d="M0 210 L0 170 L55 170 L55 132 L90 132 L90 190 L140 190 L140 145 L175 145 L175 118 L205 118 L205 185 L250 185 L250 152 L288 152 L288 104 L318 104 L318 184 L350 184 L350 140 L392 140 L392 174 L435 174 L435 128 L468 128 L468 194 L520 194 L520 154 L558 154 L558 210 Z" fill="#08343A" opacity=".9"/>
+  <path d="M0 218 C120 198 180 234 300 216 C420 198 492 232 600 210 L600 260 L0 260 Z" fill="#157C82" opacity=".22"/>
+  <text x="28" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#08343A">Berlin</text>
+  <text x="30" y="82" font-family="Arial, sans-serif" font-size="14" fill="#335d61">YOOBELONG location concept</text>
+</svg></div>
+  <div class="location-body">
+    <span class="chip">Berlin</span>
+    <h3>Senior living in Berlin</h3>
+    <p>Germany&#x27;s largest city combines dense urban neighborhoods, major cultural institutions, extensive public transport and a wide range of local services.</p>
+    <div class="location-tags">
+      <span class="location-tag">Culture</span>
+      <span class="location-tag">Urban life</span>
+      <span class="location-tag">Residences</span>
+      <span class="location-tag">Local services</span>
+    </div>
+    <p><b>Example areas:</b> Westend · Charlottenburg</p>
+    <div class="location-cta">
+      <button class="btn alt" onclick="go('catalog')">View residences</button>
+      <span class="location-arrow" onclick="setPrototypeCity('Berlin')">Explore local offers →</span>
+    </div>
+  </div>
+</article>
+
+<article class="location-card">
+  <div class="location-visual">
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hamburg illustration">
+  <defs>
+    <linearGradient id="g3528671" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfeeed"/>
+      <stop offset="1" stop-color="#f5e8c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="260" fill="url(#g3528671)"/>
+  <circle cx="485" cy="62" r="34" fill="#E9A21B" opacity=".75"/>
+  <path d="M0 210 L0 170 L55 170 L55 132 L90 132 L90 190 L140 190 L140 145 L175 145 L175 118 L205 118 L205 185 L250 185 L250 152 L288 152 L288 104 L318 104 L318 184 L350 184 L350 140 L392 140 L392 174 L435 174 L435 128 L468 128 L468 194 L520 194 L520 154 L558 154 L558 210 Z" fill="#08343A" opacity=".9"/>
+  <path d="M0 218 C120 198 180 234 300 216 C420 198 492 232 600 210 L600 260 L0 260 Z" fill="#157C82" opacity=".22"/>
+  <text x="28" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#08343A">Hamburg</text>
+  <text x="30" y="82" font-family="Arial, sans-serif" font-size="14" fill="#335d61">YOOBELONG location concept</text>
+</svg></div>
+  <div class="location-body">
+    <span class="chip">Hamburg</span>
+    <h3>Senior living in Hamburg</h3>
+    <p>A waterside city with strong neighborhood identities, green spaces and a broad mix of central and quieter residential areas.</p>
+    <div class="location-tags">
+      <span class="location-tag">Waterfront</span>
+      <span class="location-tag">Mobility</span>
+      <span class="location-tag">Residences</span>
+      <span class="location-tag">Local services</span>
+    </div>
+    <p><b>Example areas:</b> Alster · Eppendorf</p>
+    <div class="location-cta">
+      <button class="btn alt" onclick="go('catalog')">View residences</button>
+      <span class="location-arrow" onclick="setPrototypeCity('Hamburg')">Explore local offers →</span>
+    </div>
+  </div>
+</article>
+
+<article class="location-card">
+  <div class="location-visual">
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Munich illustration">
+  <defs>
+    <linearGradient id="g8095908" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfeeed"/>
+      <stop offset="1" stop-color="#f5e8c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="260" fill="url(#g8095908)"/>
+  <circle cx="485" cy="62" r="34" fill="#E9A21B" opacity=".75"/>
+  <path d="M0 210 L0 170 L55 170 L55 132 L90 132 L90 190 L140 190 L140 145 L175 145 L175 118 L205 118 L205 185 L250 185 L250 152 L288 152 L288 104 L318 104 L318 184 L350 184 L350 140 L392 140 L392 174 L435 174 L435 128 L468 128 L468 194 L520 194 L520 154 L558 154 L558 210 Z" fill="#08343A" opacity=".9"/>
+  <path d="M0 218 C120 198 180 234 300 216 C420 198 492 232 600 210 L600 260 L0 260 Z" fill="#157C82" opacity=".22"/>
+  <text x="28" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#08343A">Munich</text>
+  <text x="30" y="82" font-family="Arial, sans-serif" font-size="14" fill="#335d61">YOOBELONG location concept</text>
+</svg></div>
+  <div class="location-body">
+    <span class="chip">Munich</span>
+    <h3>Senior living in Munich</h3>
+    <p>A high-demand residential market with established districts, parks, healthcare infrastructure and a strong cultural offering.</p>
+    <div class="location-tags">
+      <span class="location-tag">Green spaces</span>
+      <span class="location-tag">Culture</span>
+      <span class="location-tag">Residences</span>
+      <span class="location-tag">Local services</span>
+    </div>
+    <p><b>Example areas:</b> Bogenhausen · Schwabing</p>
+    <div class="location-cta">
+      <button class="btn alt" onclick="go('catalog')">View residences</button>
+      <span class="location-arrow" onclick="setPrototypeCity('Munich')">Explore local offers →</span>
+    </div>
+  </div>
+</article>
+
+<article class="location-card">
+  <div class="location-visual">
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cologne illustration">
+  <defs>
+    <linearGradient id="g3464801" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfeeed"/>
+      <stop offset="1" stop-color="#f5e8c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="260" fill="url(#g3464801)"/>
+  <circle cx="485" cy="62" r="34" fill="#E9A21B" opacity=".75"/>
+  <path d="M0 210 L0 170 L55 170 L55 132 L90 132 L90 190 L140 190 L140 145 L175 145 L175 118 L205 118 L205 185 L250 185 L250 152 L288 152 L288 104 L318 104 L318 184 L350 184 L350 140 L392 140 L392 174 L435 174 L435 128 L468 128 L468 194 L520 194 L520 154 L558 154 L558 210 Z" fill="#08343A" opacity=".9"/>
+  <path d="M0 218 C120 198 180 234 300 216 C420 198 492 232 600 210 L600 260 L0 260 Z" fill="#157C82" opacity=".22"/>
+  <text x="28" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#08343A">Cologne</text>
+  <text x="30" y="82" font-family="Arial, sans-serif" font-size="14" fill="#335d61">YOOBELONG location concept</text>
+</svg></div>
+  <div class="location-body">
+    <span class="chip">Cologne</span>
+    <h3>Senior living in Cologne</h3>
+    <p>A social and lively Rhine city with strong local neighborhoods, major cultural destinations and convenient everyday infrastructure.</p>
+    <div class="location-tags">
+      <span class="location-tag">Community</span>
+      <span class="location-tag">Rhine</span>
+      <span class="location-tag">Residences</span>
+      <span class="location-tag">Local services</span>
+    </div>
+    <p><b>Example areas:</b> Lindenthal · Rodenkirchen</p>
+    <div class="location-cta">
+      <button class="btn alt" onclick="go('catalog')">View residences</button>
+      <span class="location-arrow" onclick="setPrototypeCity('Cologne')">Explore local offers →</span>
+    </div>
+  </div>
+</article>
+
+<article class="location-card">
+  <div class="location-visual">
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Frankfurt am Main illustration">
+  <defs>
+    <linearGradient id="g2670777" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfeeed"/>
+      <stop offset="1" stop-color="#f5e8c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="260" fill="url(#g2670777)"/>
+  <circle cx="485" cy="62" r="34" fill="#E9A21B" opacity=".75"/>
+  <path d="M0 210 L0 170 L55 170 L55 132 L90 132 L90 190 L140 190 L140 145 L175 145 L175 118 L205 118 L205 185 L250 185 L250 152 L288 152 L288 104 L318 104 L318 184 L350 184 L350 140 L392 140 L392 174 L435 174 L435 128 L468 128 L468 194 L520 194 L520 154 L558 154 L558 210 Z" fill="#08343A" opacity=".9"/>
+  <path d="M0 218 C120 198 180 234 300 216 C420 198 492 232 600 210 L600 260 L0 260 Z" fill="#157C82" opacity=".22"/>
+  <text x="28" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#08343A">Frankfurt am Main</text>
+  <text x="30" y="82" font-family="Arial, sans-serif" font-size="14" fill="#335d61">YOOBELONG location concept</text>
+</svg></div>
+  <div class="location-body">
+    <span class="chip">Frankfurt am Main</span>
+    <h3>Senior living in Frankfurt am Main</h3>
+    <p>A compact international city where excellent transport connections, healthcare access and walkable districts can support independent living.</p>
+    <div class="location-tags">
+      <span class="location-tag">Transport</span>
+      <span class="location-tag">Healthcare</span>
+      <span class="location-tag">Residences</span>
+      <span class="location-tag">Local services</span>
+    </div>
+    <p><b>Example areas:</b> Westend · Sachsenhausen</p>
+    <div class="location-cta">
+      <button class="btn alt" onclick="go('catalog')">View residences</button>
+      <span class="location-arrow" onclick="setPrototypeCity('Frankfurt am Main')">Explore local offers →</span>
+    </div>
+  </div>
+</article>
+
+<article class="location-card">
+  <div class="location-visual">
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stuttgart illustration">
+  <defs>
+    <linearGradient id="g10694828" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfeeed"/>
+      <stop offset="1" stop-color="#f5e8c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="260" fill="url(#g10694828)"/>
+  <circle cx="485" cy="62" r="34" fill="#E9A21B" opacity=".75"/>
+  <path d="M0 210 L0 170 L55 170 L55 132 L90 132 L90 190 L140 190 L140 145 L175 145 L175 118 L205 118 L205 185 L250 185 L250 152 L288 152 L288 104 L318 104 L318 184 L350 184 L350 140 L392 140 L392 174 L435 174 L435 128 L468 128 L468 194 L520 194 L520 154 L558 154 L558 210 Z" fill="#08343A" opacity=".9"/>
+  <path d="M0 218 C120 198 180 234 300 216 C420 198 492 232 600 210 L600 260 L0 260 Z" fill="#157C82" opacity=".22"/>
+  <text x="28" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#08343A">Stuttgart</text>
+  <text x="30" y="82" font-family="Arial, sans-serif" font-size="14" fill="#335d61">YOOBELONG location concept</text>
+</svg></div>
+  <div class="location-body">
+    <span class="chip">Stuttgart</span>
+    <h3>Senior living in Stuttgart</h3>
+    <p>A green, hilly city with established residential districts, cultural institutions and strong regional mobility.</p>
+    <div class="location-tags">
+      <span class="location-tag">Green city</span>
+      <span class="location-tag">Regional links</span>
+      <span class="location-tag">Residences</span>
+      <span class="location-tag">Local services</span>
+    </div>
+    <p><b>Example areas:</b> Degerloch · Bad Cannstatt</p>
+    <div class="location-cta">
+      <button class="btn alt" onclick="go('catalog')">View residences</button>
+      <span class="location-arrow" onclick="setPrototypeCity('Stuttgart')">Explore local offers →</span>
+    </div>
+  </div>
+</article>
+
+<article class="location-card">
+  <div class="location-visual">
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Düsseldorf illustration">
+  <defs>
+    <linearGradient id="g6234797" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfeeed"/>
+      <stop offset="1" stop-color="#f5e8c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="260" fill="url(#g6234797)"/>
+  <circle cx="485" cy="62" r="34" fill="#E9A21B" opacity=".75"/>
+  <path d="M0 210 L0 170 L55 170 L55 132 L90 132 L90 190 L140 190 L140 145 L175 145 L175 118 L205 118 L205 185 L250 185 L250 152 L288 152 L288 104 L318 104 L318 184 L350 184 L350 140 L392 140 L392 174 L435 174 L435 128 L468 128 L468 194 L520 194 L520 154 L558 154 L558 210 Z" fill="#08343A" opacity=".9"/>
+  <path d="M0 218 C120 198 180 234 300 216 C420 198 492 232 600 210 L600 260 L0 260 Z" fill="#157C82" opacity=".22"/>
+  <text x="28" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#08343A">Düsseldorf</text>
+  <text x="30" y="82" font-family="Arial, sans-serif" font-size="14" fill="#335d61">YOOBELONG location concept</text>
+</svg></div>
+  <div class="location-body">
+    <span class="chip">Düsseldorf</span>
+    <h3>Senior living in Düsseldorf</h3>
+    <p>A Rhine-side city known for compact neighborhoods, shopping, culture and a high concentration of everyday services.</p>
+    <div class="location-tags">
+      <span class="location-tag">Rhine</span>
+      <span class="location-tag">Lifestyle</span>
+      <span class="location-tag">Residences</span>
+      <span class="location-tag">Local services</span>
+    </div>
+    <p><b>Example areas:</b> Oberkassel · Pempelfort</p>
+    <div class="location-cta">
+      <button class="btn alt" onclick="go('catalog')">View residences</button>
+      <span class="location-arrow" onclick="setPrototypeCity('Düsseldorf')">Explore local offers →</span>
+    </div>
+  </div>
+</article>
+
+<article class="location-card">
+  <div class="location-visual">
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Leipzig illustration">
+  <defs>
+    <linearGradient id="g4884603" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfeeed"/>
+      <stop offset="1" stop-color="#f5e8c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="260" fill="url(#g4884603)"/>
+  <circle cx="485" cy="62" r="34" fill="#E9A21B" opacity=".75"/>
+  <path d="M0 210 L0 170 L55 170 L55 132 L90 132 L90 190 L140 190 L140 145 L175 145 L175 118 L205 118 L205 185 L250 185 L250 152 L288 152 L288 104 L318 104 L318 184 L350 184 L350 140 L392 140 L392 174 L435 174 L435 128 L468 128 L468 194 L520 194 L520 154 L558 154 L558 210 Z" fill="#08343A" opacity=".9"/>
+  <path d="M0 218 C120 198 180 234 300 216 C420 198 492 232 600 210 L600 260 L0 260 Z" fill="#157C82" opacity=".22"/>
+  <text x="28" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#08343A">Leipzig</text>
+  <text x="30" y="82" font-family="Arial, sans-serif" font-size="14" fill="#335d61">YOOBELONG location concept</text>
+</svg></div>
+  <div class="location-body">
+    <span class="chip">Leipzig</span>
+    <h3>Senior living in Leipzig</h3>
+    <p>A growing city with historic neighborhoods, cultural life, parks and comparatively spacious urban residential areas.</p>
+    <div class="location-tags">
+      <span class="location-tag">Culture</span>
+      <span class="location-tag">Parks</span>
+      <span class="location-tag">Residences</span>
+      <span class="location-tag">Local services</span>
+    </div>
+    <p><b>Example areas:</b> Gohlis · Südvorstadt</p>
+    <div class="location-cta">
+      <button class="btn alt" onclick="go('catalog')">View residences</button>
+      <span class="location-arrow" onclick="setPrototypeCity('Leipzig')">Explore local offers →</span>
+    </div>
+  </div>
+</article>
+
+<article class="location-card">
+  <div class="location-visual">
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bremen illustration">
+  <defs>
+    <linearGradient id="g9617912" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfeeed"/>
+      <stop offset="1" stop-color="#f5e8c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="260" fill="url(#g9617912)"/>
+  <circle cx="485" cy="62" r="34" fill="#E9A21B" opacity=".75"/>
+  <path d="M0 210 L0 170 L55 170 L55 132 L90 132 L90 190 L140 190 L140 145 L175 145 L175 118 L205 118 L205 185 L250 185 L250 152 L288 152 L288 104 L318 104 L318 184 L350 184 L350 140 L392 140 L392 174 L435 174 L435 128 L468 128 L468 194 L520 194 L520 154 L558 154 L558 210 Z" fill="#08343A" opacity=".9"/>
+  <path d="M0 218 C120 198 180 234 300 216 C420 198 492 232 600 210 L600 260 L0 260 Z" fill="#157C82" opacity=".22"/>
+  <text x="28" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#08343A">Bremen</text>
+  <text x="30" y="82" font-family="Arial, sans-serif" font-size="14" fill="#335d61">YOOBELONG location concept</text>
+</svg></div>
+  <div class="location-body">
+    <span class="chip">Bremen</span>
+    <h3>Senior living in Bremen</h3>
+    <p>A smaller major city with a compact center, strong neighborhood character and easy access to local services and green areas.</p>
+    <div class="location-tags">
+      <span class="location-tag">Compact city</span>
+      <span class="location-tag">Community</span>
+      <span class="location-tag">Residences</span>
+      <span class="location-tag">Local services</span>
+    </div>
+    <p><b>Example areas:</b> Schwachhausen · Viertel</p>
+    <div class="location-cta">
+      <button class="btn alt" onclick="go('catalog')">View residences</button>
+      <span class="location-arrow" onclick="setPrototypeCity('Bremen')">Explore local offers →</span>
+    </div>
+  </div>
+</article>
+
+<article class="location-card">
+  <div class="location-visual">
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dresden illustration">
+  <defs>
+    <linearGradient id="g1699167" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfeeed"/>
+      <stop offset="1" stop-color="#f5e8c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="260" fill="url(#g1699167)"/>
+  <circle cx="485" cy="62" r="34" fill="#E9A21B" opacity=".75"/>
+  <path d="M0 210 L0 170 L55 170 L55 132 L90 132 L90 190 L140 190 L140 145 L175 145 L175 118 L205 118 L205 185 L250 185 L250 152 L288 152 L288 104 L318 104 L318 184 L350 184 L350 140 L392 140 L392 174 L435 174 L435 128 L468 128 L468 194 L520 194 L520 154 L558 154 L558 210 Z" fill="#08343A" opacity=".9"/>
+  <path d="M0 218 C120 198 180 234 300 216 C420 198 492 232 600 210 L600 260 L0 260 Z" fill="#157C82" opacity=".22"/>
+  <text x="28" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#08343A">Dresden</text>
+  <text x="30" y="82" font-family="Arial, sans-serif" font-size="14" fill="#335d61">YOOBELONG location concept</text>
+</svg></div>
+  <div class="location-body">
+    <span class="chip">Dresden</span>
+    <h3>Senior living in Dresden</h3>
+    <p>A city combining major cultural heritage, river landscapes and residential districts with strong local identities.</p>
+    <div class="location-tags">
+      <span class="location-tag">Culture</span>
+      <span class="location-tag">Elbe</span>
+      <span class="location-tag">Residences</span>
+      <span class="location-tag">Local services</span>
+    </div>
+    <p><b>Example areas:</b> Blasewitz · Loschwitz</p>
+    <div class="location-cta">
+      <button class="btn alt" onclick="go('catalog')">View residences</button>
+      <span class="location-arrow" onclick="setPrototypeCity('Dresden')">Explore local offers →</span>
+    </div>
+  </div>
+</article>
+
+<article class="location-card">
+  <div class="location-visual">
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hannover illustration">
+  <defs>
+    <linearGradient id="g12743993" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfeeed"/>
+      <stop offset="1" stop-color="#f5e8c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="260" fill="url(#g12743993)"/>
+  <circle cx="485" cy="62" r="34" fill="#E9A21B" opacity=".75"/>
+  <path d="M0 210 L0 170 L55 170 L55 132 L90 132 L90 190 L140 190 L140 145 L175 145 L175 118 L205 118 L205 185 L250 185 L250 152 L288 152 L288 104 L318 104 L318 184 L350 184 L350 140 L392 140 L392 174 L435 174 L435 128 L468 128 L468 194 L520 194 L520 154 L558 154 L558 210 Z" fill="#08343A" opacity=".9"/>
+  <path d="M0 218 C120 198 180 234 300 216 C420 198 492 232 600 210 L600 260 L0 260 Z" fill="#157C82" opacity=".22"/>
+  <text x="28" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#08343A">Hannover</text>
+  <text x="30" y="82" font-family="Arial, sans-serif" font-size="14" fill="#335d61">YOOBELONG location concept</text>
+</svg></div>
+  <div class="location-body">
+    <span class="chip">Hannover</span>
+    <h3>Senior living in Hannover</h3>
+    <p>A well-connected city with large green spaces, healthcare infrastructure and straightforward regional transport.</p>
+    <div class="location-tags">
+      <span class="location-tag">Green spaces</span>
+      <span class="location-tag">Connections</span>
+      <span class="location-tag">Residences</span>
+      <span class="location-tag">Local services</span>
+    </div>
+    <p><b>Example areas:</b> List · Kirchrode</p>
+    <div class="location-cta">
+      <button class="btn alt" onclick="go('catalog')">View residences</button>
+      <span class="location-arrow" onclick="setPrototypeCity('Hannover')">Explore local offers →</span>
+    </div>
+  </div>
+</article>
+
+<article class="location-card">
+  <div class="location-visual">
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Nuremberg illustration">
+  <defs>
+    <linearGradient id="g12233107" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfeeed"/>
+      <stop offset="1" stop-color="#f5e8c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="260" fill="url(#g12233107)"/>
+  <circle cx="485" cy="62" r="34" fill="#E9A21B" opacity=".75"/>
+  <path d="M0 210 L0 170 L55 170 L55 132 L90 132 L90 190 L140 190 L140 145 L175 145 L175 118 L205 118 L205 185 L250 185 L250 152 L288 152 L288 104 L318 104 L318 184 L350 184 L350 140 L392 140 L392 174 L435 174 L435 128 L468 128 L468 194 L520 194 L520 154 L558 154 L558 210 Z" fill="#08343A" opacity=".9"/>
+  <path d="M0 218 C120 198 180 234 300 216 C420 198 492 232 600 210 L600 260 L0 260 Z" fill="#157C82" opacity=".22"/>
+  <text x="28" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#08343A">Nuremberg</text>
+  <text x="30" y="82" font-family="Arial, sans-serif" font-size="14" fill="#335d61">YOOBELONG location concept</text>
+</svg></div>
+  <div class="location-body">
+    <span class="chip">Nuremberg</span>
+    <h3>Senior living in Nuremberg</h3>
+    <p>A historic city with compact districts, regional rail links and a strong mix of urban services and cultural life.</p>
+    <div class="location-tags">
+      <span class="location-tag">Historic city</span>
+      <span class="location-tag">Mobility</span>
+      <span class="location-tag">Residences</span>
+      <span class="location-tag">Local services</span>
+    </div>
+    <p><b>Example areas:</b> Erlenstegen · Mögeldorf</p>
+    <div class="location-cta">
+      <button class="btn alt" onclick="go('catalog')">View residences</button>
+      <span class="location-arrow" onclick="setPrototypeCity('Nuremberg')">Explore local offers →</span>
+    </div>
+  </div>
+</article>
+
+<article class="location-card">
+  <div class="location-visual">
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bonn illustration">
+  <defs>
+    <linearGradient id="g242030" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfeeed"/>
+      <stop offset="1" stop-color="#f5e8c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="260" fill="url(#g242030)"/>
+  <circle cx="485" cy="62" r="34" fill="#E9A21B" opacity=".75"/>
+  <path d="M0 210 L0 170 L55 170 L55 132 L90 132 L90 190 L140 190 L140 145 L175 145 L175 118 L205 118 L205 185 L250 185 L250 152 L288 152 L288 104 L318 104 L318 184 L350 184 L350 140 L392 140 L392 174 L435 174 L435 128 L468 128 L468 194 L520 194 L520 154 L558 154 L558 210 Z" fill="#08343A" opacity=".9"/>
+  <path d="M0 218 C120 198 180 234 300 216 C420 198 492 232 600 210 L600 260 L0 260 Z" fill="#157C82" opacity=".22"/>
+  <text x="28" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#08343A">Bonn</text>
+  <text x="30" y="82" font-family="Arial, sans-serif" font-size="14" fill="#335d61">YOOBELONG location concept</text>
+</svg></div>
+  <div class="location-body">
+    <span class="chip">Bonn</span>
+    <h3>Senior living in Bonn</h3>
+    <p>A Rhine city with green residential districts, international institutions and a calmer urban scale than larger metropolitan markets.</p>
+    <div class="location-tags">
+      <span class="location-tag">Rhine</span>
+      <span class="location-tag">Calm urban life</span>
+      <span class="location-tag">Residences</span>
+      <span class="location-tag">Local services</span>
+    </div>
+    <p><b>Example areas:</b> Bad Godesberg · Südstadt</p>
+    <div class="location-cta">
+      <button class="btn alt" onclick="go('catalog')">View residences</button>
+      <span class="location-arrow" onclick="setPrototypeCity('Bonn')">Explore local offers →</span>
+    </div>
+  </div>
+</article>
+
+<article class="location-card">
+  <div class="location-visual">
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Münster illustration">
+  <defs>
+    <linearGradient id="g10204218" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfeeed"/>
+      <stop offset="1" stop-color="#f5e8c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="260" fill="url(#g10204218)"/>
+  <circle cx="485" cy="62" r="34" fill="#E9A21B" opacity=".75"/>
+  <path d="M0 210 L0 170 L55 170 L55 132 L90 132 L90 190 L140 190 L140 145 L175 145 L175 118 L205 118 L205 185 L250 185 L250 152 L288 152 L288 104 L318 104 L318 184 L350 184 L350 140 L392 140 L392 174 L435 174 L435 128 L468 128 L468 194 L520 194 L520 154 L558 154 L558 210 Z" fill="#08343A" opacity=".9"/>
+  <path d="M0 218 C120 198 180 234 300 216 C420 198 492 232 600 210 L600 260 L0 260 Z" fill="#157C82" opacity=".22"/>
+  <text x="28" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#08343A">Münster</text>
+  <text x="30" y="82" font-family="Arial, sans-serif" font-size="14" fill="#335d61">YOOBELONG location concept</text>
+</svg></div>
+  <div class="location-body">
+    <span class="chip">Münster</span>
+    <h3>Senior living in Münster</h3>
+    <p>A highly cycle-friendly university city with compact distances, green surroundings and strong everyday accessibility.</p>
+    <div class="location-tags">
+      <span class="location-tag">Cycling</span>
+      <span class="location-tag">Walkability</span>
+      <span class="location-tag">Residences</span>
+      <span class="location-tag">Local services</span>
+    </div>
+    <p><b>Example areas:</b> Mauritz · Kreuzviertel</p>
+    <div class="location-cta">
+      <button class="btn alt" onclick="go('catalog')">View residences</button>
+      <span class="location-arrow" onclick="setPrototypeCity('Münster')">Explore local offers →</span>
+    </div>
+  </div>
+</article>
+
+<article class="location-card">
+  <div class="location-visual">
+<svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Karlsruhe illustration">
+  <defs>
+    <linearGradient id="g5062154" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dfeeed"/>
+      <stop offset="1" stop-color="#f5e8c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="260" fill="url(#g5062154)"/>
+  <circle cx="485" cy="62" r="34" fill="#E9A21B" opacity=".75"/>
+  <path d="M0 210 L0 170 L55 170 L55 132 L90 132 L90 190 L140 190 L140 145 L175 145 L175 118 L205 118 L205 185 L250 185 L250 152 L288 152 L288 104 L318 104 L318 184 L350 184 L350 140 L392 140 L392 174 L435 174 L435 128 L468 128 L468 194 L520 194 L520 154 L558 154 L558 210 Z" fill="#08343A" opacity=".9"/>
+  <path d="M0 218 C120 198 180 234 300 216 C420 198 492 232 600 210 L600 260 L0 260 Z" fill="#157C82" opacity=".22"/>
+  <text x="28" y="54" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#08343A">Karlsruhe</text>
+  <text x="30" y="82" font-family="Arial, sans-serif" font-size="14" fill="#335d61">YOOBELONG location concept</text>
+</svg></div>
+  <div class="location-body">
+    <span class="chip">Karlsruhe</span>
+    <h3>Senior living in Karlsruhe</h3>
+    <p>A planned, accessible city with strong regional connections, green areas and a broad range of urban services.</p>
+    <div class="location-tags">
+      <span class="location-tag">Accessibility</span>
+      <span class="location-tag">Regional links</span>
+      <span class="location-tag">Residences</span>
+      <span class="location-tag">Local services</span>
+    </div>
+    <p><b>Example areas:</b> Durlach · Weststadt</p>
+    <div class="location-cta">
+      <button class="btn alt" onclick="go('catalog')">View residences</button>
+      <span class="location-arrow" onclick="setPrototypeCity('Karlsruhe')">Explore local offers →</span>
+    </div>
+  </div>
+</article>
+
+</div>
+</section>
+
+<section>
+<div class="section-head"><div><h2>What each location page can contain</h2><p>The city layer should help users understand both the place and the YOOBELONG offer around it.</p></div></div>
+<div class="grid">
+  <div class="card"><h3>Residences & apartments</h3><p>Available homes, apartment types, indicative pricing, amenities, viewing requests and waiting-list opportunities.</p></div>
+  <div class="card"><h3>Neighborhood guidance</h3><p>Selected districts, mobility, green spaces, cultural life and everyday infrastructure relevant to independent living.</p></div>
+  <div class="card"><h3>Services nearby</h3><p>Household support, wellbeing, mobility, technical help and other local partners from the services marketplace.</p></div>
+  <div class="card"><h3>Activities & community</h3><p>Local events, classes and social opportunities that make the location feel like more than a property search.</p></div>
+</div>
+</section>
+</div>
+
+<div id="booking" class="page">
+<div class="hero">
+  <div>
+    <div class="eyebrow">YOOBELONG Booking Portal</div>
+    <h1>Services and activities around you.</h1>
+    <p>The booking portal is the transactional layer of YOOBELONG. Users can discover local activities, book services, join events and return regularly for new offers in their area.</p>
+    <p><button class="btn" onclick="openModal('cityselect')">Change location</button></p>
+  </div>
+  <div class="hero-card">
+    <h3>Your current location</h3>
+    <p><b id="bookingCity">Berlin</b><br>Detected automatically and confirmed by the user.</p>
+    <p>Filters can then prioritize offers by city, district and distance.</p>
+  </div>
+</div>
+
+<section>
+<div class="searchbox">
+  <select><option id="bookingCityOption">Berlin</option><option>Hamburg</option><option>Munich</option><option>Cologne</option></select>
+  <select><option>Activities & Services</option><option>Activities only</option><option>Services only</option></select>
+  <select><option>All categories</option><option>Sport & Wellness</option><option>Culture & Music</option><option>Household</option><option>Mobility</option><option>Technical help</option></select>
+  <button class="btn" onclick="openModal('search')">Find offers</button>
+</div>
+</section>
+
+<section>
+<div class="section-head">
+  <div><h2>Activities</h2><p>Illustrative offers showing how the existing booking portal can be surfaced from the larger YOOBELONG ecosystem.</p></div>
+</div>
+<div class="grid">
+  <div class="card"><span class="chip">Sport & Wellness</span><h3>Morning mobility & stretch</h3><p>Berlin Westend · Tuesday 10:00 · 8 places</p><p>Gentle guided movement for mobility and balance.</p><button class="btn" onclick="openModal('bookact')">Book now</button></div>
+  <div class="card"><span class="chip">Culture & Music</span><h3>Chamber music evening</h3><p>Charlottenburg · Thursday 18:30 · 14 places</p><p>Local classical music and an informal social gathering afterwards.</p><button class="btn" onclick="openModal('bookact')">Book now</button></div>
+  <div class="card"><span class="chip">Languages</span><h3>English conversation table</h3><p>Berlin Westend · Friday 15:00 · 10 places</p><p>Relaxed conversation for people who want to keep practicing English.</p><button class="btn" onclick="openModal('bookact')">Book now</button></div>
+</div>
+</section>
+
+<section>
+<div class="section-head">
+  <div><h2>Services</h2><p>Local service providers can be discovered in the same portal and booked or contacted depending on the service model.</p></div>
+</div>
+<div class="grid">
+  <div class="card"><span class="chip">Wellbeing</span><h3>At-home physiotherapy</h3><p>From EUR 75 · Berlin Westend</p><p>Request a home visit or appointment at a nearby practice.</p><button class="btn" onclick="openModal('bookservice')">Request service</button></div>
+  <div class="card"><span class="chip">Household</span><h3>Home cleaning support</h3><p>From EUR 28/hour · Berlin Westend</p><p>Flexible one-off or recurring household support.</p><button class="btn" onclick="openModal('bookservice')">Request service</button></div>
+  <div class="card"><span class="chip">Technical help</span><h3>Digital help at home</h3><p>From EUR 49/session · Berlin Westend</p><p>Smartphones, tablets, video calls and common online services.</p><button class="btn" onclick="openModal('bookservice')">Request service</button></div>
+</div>
+</section>
+
+<section>
+<div class="notice"><b>Portal connection:</b> In the final product, city and district context should be shared between the senior-living portal and the booking portal, so a user does not need to choose the location twice.</div>
+</section>
+</div>
+
+
+<div id="services" class="page">
+<section class="services-hero">
+  <div class="eyebrow" style="color:#1d55e7">YOOBELONG SERVICES</div>
+  <h1>Services</h1>
+  <p>Our partners help make everyday life easier. You choose what is useful for you.</p>
+</section>
+
+<section style="margin-top:10px">
+  <div class="services-toolbar">
+    <div class="services-search">
+      <input type="text" placeholder="Search for a service">
+      <button class="btn" style="border-radius:10px;background:#1d55e7;color:#fff" onclick="openModal('search')">Search</button>
+    </div>
+    <button class="btn alt" style="border-radius:10px;border-color:#1d55e7;color:#1d55e7" onclick="openModal('search')">Filter</button>
+  </div>
+
+  <div class="category-row">
+    <button class="category-pill active">All categories</button>
+    <button class="category-pill">Wellbeing</button>
+    <button class="category-pill">Medical services</button>
+    <button class="category-pill">Advice</button>
+    <button class="category-pill">Household</button>
+    <button class="category-pill">Mobility</button>
+    <button class="category-pill">Technical support</button>
+  </div>
+
+  <div class="services-grid">
+    <article class="service-card">
+      <div class="service-card-image">
+        <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80" alt="Physiotherapy at home">
+        <button class="favorite" aria-label="Add to favorites">♡</button>
+      </div>
+      <div class="service-card-body">
+        <h3>Physiotherapy at home</h3>
+        <p>Get professional physiotherapy support in the comfort of your own home.</p>
+        <div class="service-tags"><span class="service-tag">Wellbeing</span><span class="service-tag">Medical services</span></div>
+        <div class="service-bottom"><span class="service-price">From EUR 45 / session</span><span class="service-link" onclick="openModal('bookservice')">Learn more →</span></div>
+      </div>
+    </article>
+
+    <article class="service-card">
+      <div class="service-card-image">
+        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=900&q=80" alt="Insurance and financial advice">
+        <button class="favorite" aria-label="Add to favorites">♡</button>
+      </div>
+      <div class="service-card-body">
+        <h3>Insurance & financial solutions</h3>
+        <p>Personal guidance around insurance, retirement planning and financial protection.</p>
+        <div class="service-tags"><span class="service-tag">Advice</span></div>
+        <div class="service-bottom"><span class="service-price">Free initial consultation</span><span class="service-link" onclick="openModal('bookservice')">Learn more →</span></div>
+      </div>
+    </article>
+
+    <article class="service-card">
+      <div class="service-card-image">
+        <img src="https://images.unsplash.com/photo-1573497491208-6b1acb260507?auto=format&fit=crop&w=900&q=80" alt="Care benefits consultation">
+        <button class="favorite" aria-label="Add to favorites">♡</button>
+      </div>
+      <div class="service-card-body">
+        <h3>Care benefits consultation</h3>
+        <p>Understand available benefits and get support with applications and next steps.</p>
+        <div class="service-tags"><span class="service-tag">Medical services</span><span class="service-tag">Advice</span></div>
+        <div class="service-bottom"><span class="service-price">Free</span><span class="service-link" onclick="openModal('bookservice')">Learn more →</span></div>
+      </div>
+    </article>
+
+    <article class="service-card">
+      <div class="service-card-image">
+        <img src="https://images.unsplash.com/photo-1582735689369-4fe89db7114c?auto=format&fit=crop&w=900&q=80" alt="Laundry service">
+        <button class="favorite" aria-label="Add to favorites">♡</button>
+      </div>
+      <div class="service-card-body">
+        <h3>Laundry care</h3>
+        <p>Pickup, washing, ironing and delivery without the hassle.</p>
+        <div class="service-tags"><span class="service-tag">Household</span></div>
+        <div class="service-bottom"><span class="service-price">From EUR 25 / week</span><span class="service-link" onclick="openModal('bookservice')">Learn more →</span></div>
+      </div>
+    </article>
+
+    <article class="service-card">
+      <div class="service-card-image">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=900&q=80" alt="Grocery shopping service">
+        <button class="favorite" aria-label="Add to favorites">♡</button>
+      </div>
+      <div class="service-card-body">
+        <h3>Shopping service</h3>
+        <p>Groceries and everyday essentials purchased and delivered according to your list.</p>
+        <div class="service-tags"><span class="service-tag">Household</span></div>
+        <div class="service-bottom"><span class="service-price">From EUR 15 / delivery</span><span class="service-link" onclick="openModal('bookservice')">Learn more →</span></div>
+      </div>
+    </article>
+
+    <article class="service-card">
+      <div class="service-card-image">
+        <img src="https://images.unsplash.com/photo-1549924231-f129b911e442?auto=format&fit=crop&w=900&q=80" alt="Ride service">
+        <button class="favorite" aria-label="Add to favorites">♡</button>
+      </div>
+      <div class="service-card-body">
+        <h3>Ride service</h3>
+        <p>Safe and convenient rides to medical appointments, public offices and events.</p>
+        <div class="service-tags"><span class="service-tag">Mobility</span><span class="service-tag">Medical services</span></div>
+        <div class="service-bottom"><span class="service-price">From EUR 20 / ride</span><span class="service-link" onclick="openModal('bookservice')">Learn more →</span></div>
+      </div>
+    </article>
+
+    <article class="service-card">
+      <div class="service-card-image">
+        <img src="https://images.unsplash.com/photo-1505798577917-a65157d3320a?auto=format&fit=crop&w=900&q=80" alt="Small handyman jobs">
+        <button class="favorite" aria-label="Add to favorites">♡</button>
+      </div>
+      <div class="service-card-body">
+        <h3>Small handyman jobs</h3>
+        <p>Help with minor repairs, mounting shelves, replacing fixtures and other small tasks at home.</p>
+        <div class="service-tags"><span class="service-tag">Household</span></div>
+        <div class="service-bottom"><span class="service-price">From EUR 35 / hour</span><span class="service-link" onclick="openModal('bookservice')">Learn more →</span></div>
+      </div>
+    </article>
+
+    <article class="service-card">
+      <div class="service-card-image">
+        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80" alt="Technical support">
+        <button class="favorite" aria-label="Add to favorites">♡</button>
+      </div>
+      <div class="service-card-body">
+        <h3>Technical help</h3>
+        <p>Support with smartphones, tablets, laptops, video calls and common online services.</p>
+        <div class="service-tags"><span class="service-tag">Technical support</span></div>
+        <div class="service-bottom"><span class="service-price">From EUR 30 / hour</span><span class="service-link" onclick="openModal('bookservice')">Learn more →</span></div>
+      </div>
+    </article>
+  </div>
+
+  <div class="service-info-bar">
+    <div class="info-note">Prices vary depending on provider, location and scope of service.</div>
+    <div class="info-note"><b>Missing a service?</b> Tell us what you are looking for and we can use that demand to expand the local partner network.</div>
+  </div>
+</section>
+</div>
+
+<div id="guide" class="page">
+<div class="hero"><div><div class="eyebrow">Guide</div><h1>Make a housing decision without the brochure language.</h1><p>SEO and editorial content answer real questions about costs, housing models, accessibility, contracts and moving later in life, then connect users with relevant residences.</p></div><div class="hero-card"><h3>Popular questions</h3><p>What does senior living cost?<br>How does assisted living work?<br>When should I join a waiting list?<br>What does barrier-free mean?</p></div></div>
+</div>
+
+<div id="partners" class="page">
+<div class="hero"><div><div class="eyebrow">For owners, developers & operators</div><h1>Turn a property into a senior living product with a real community.</h1><p>YOOBELONG connects real estate, digital demand generation, community design and local services. Residence pages can support both leasing and long-term tenant engagement.</p></div><div class="hero-card"><h3>Partner journey</h3><p>Assess location -> define concept -> launch project page -> collect demand -> lease apartments -> activate tenant community.</p><button class="btn" onclick="openModal('partner')">Discuss a project</button></div></div>
+</div>
+
+<div class="footer"><b class="brand" style="color:white">YOO<b>BELONG</b></b><p>Clickable concept prototype - Living, Residences, Locations, Community, Services, Content and Partner journey.</p></div>
+</main>
+
+<div id="modal" class="modal"><div class="modalbox"><button class="close" onclick="closeModal()">x</button><div id="modalcontent"></div></div></div>
+
+<script>
+function go(id){
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+ (document.getElementById(id)||document.getElementById('home')).classList.add('active');
+ window.scrollTo({top:0,behavior:'smooth'});
+ history.replaceState(null,'','#'+id)
+}
+const copy={
+ wait:['Register interest','Choose a city or future residence and leave your contact details. In the real portal, this becomes an early demand lead.'],
+ login:['Sign in','This will later open the personal YOOBELONG area for favorites, enquiries, residence updates, events and community features.'],
+ search:['Residence search','Production search can combine location, price, room count, floor area, accessibility, availability and residence amenities.'],
+ partner:['Discuss a project','Owners and developers can submit project type, location, development stage and contact details.'],
+ rental:['Apartment enquiry','Select a specific apartment, leave your contact details and choose whether you would like a call or viewing appointment.'],
+ viewing:['Book a viewing','Choose a preferred date and time. The residence team confirms the appointment afterwards.'],
+ waitapt:['Save housing preferences','Tell us your preferred residence, room count, floor area, monthly budget, target move-in date and important accessibility or amenity requirements.'],
+bookact:['Book activity','Confirm the selected activity, number of participants and your contact details. In production this can use capacity control and booking confirmation.'],
+bookservice:['Request service','Send a service request to the selected local partner. Depending on the partner model this can be a direct booking, lead request or paid booking.'],
+cityselect:['Choose your city','Change the city used for local services, activities and residence recommendations.'],
+
+};
+function openModal(k){
+ let c=copy[k]||copy.wait;
+ document.getElementById('modalcontent').innerHTML='<h2>'+c[0]+'</h2><p>'+c[1]+'</p><p><input placeholder="Email address" style="width:100%;padding:13px;border:1px solid #ccc;border-radius:8px"></p><p><input placeholder="Phone (optional)" style="width:100%;padding:13px;border:1px solid #ccc;border-radius:8px"></p><button class="btn" onclick="closeModal()">Submit</button>';
+ document.getElementById('modal').classList.add('open')
+}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+
+
+function setPrototypeCity(city){
+  localStorage.setItem('yoobelongCity',city);
+  applyCity(city);
+  go('booking');
+}
+
+// Prototype-only geo-IP behavior.
+// Production implementation should resolve an approximate city from the user's public IP,
+// then ask for confirmation before using it for local recommendations.
+function detectCityFromIP(){
+  const saved=localStorage.getItem('yoobelongCity');
+  if(saved){
+    applyCity(saved);
+    return;
+  }
+  // Simulated result for the clickable prototype.
+  // Replace with a backend GeoIP lookup in production.
+  const detected='Berlin';
+  document.getElementById('detectedCity').textContent=detected;
+  document.getElementById('locationBanner').style.display='block';
+}
+function confirmCity(correct){
+  if(correct){
+    const city=document.getElementById('detectedCity').textContent;
+    localStorage.setItem('yoobelongCity',city);
+    applyCity(city);
+    document.getElementById('locationBanner').style.display='none';
+  }else{
+    const city=prompt('Which city should we use?','Hamburg');
+    if(city){
+      localStorage.setItem('yoobelongCity',city);
+      applyCity(city);
+      document.getElementById('locationBanner').style.display='none';
+    }
+  }
+}
+function applyCity(city){
+  const a=document.getElementById('bookingCity'); if(a) a.textContent=city;
+  const b=document.getElementById('bookingCityOption'); if(b) b.textContent=city;
+}
+window.addEventListener('load',detectCityFromIP);
+
+if(location.hash)go(location.hash.slice(1));
+</script>
+</body>
+</html>
